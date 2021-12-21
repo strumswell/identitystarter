@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Selection Demo</h1>
+    <form onsubmit="event.preventDefault();">
+      <label for="funcWeight">Functionality Weight</label><br />
+      <input type="decimal" id="funcWeight" name="funcWeight" value="0.2" /><br />
+      <label for="flexWeight">Flexibility Weight</label><br />
+      <input type="decimal" id="flexWeight" name="flexWeight" value="0.2" /><br />
+      <label for="operaWeight">Operability Weight</label><br />
+      <input type="decimal" id="operaWeight" name="operaWeight" value="0.2" /><br />
+      <label for="depenWeight">Dependency Weight</label><br />
+      <input type="decimal" id="depenWeight" name="depenWeight" value="0.2" /><br />
+      <label for="involvWeight">Involvement Weight</label><br />
+      <input type="decimal" id="involvWeight" name="involvWeight" value="0.2" /><br />
+      <button onclick="showResults()">Calc</button>
+    </form>
+
+    <div>
+      <h2>Weighted Result</h2>
+      <pre id="results">Not calculated yet</pre>
+      <h2>Loaded Questions</h2>
+      <p>
+        Based on
+        <a
+          href="https://docs.google.com/spreadsheets/d/1R7UHpZyOUIk14qhUq1tbjfIwzTzs1vysWkB-P2METzM/edit?usp=sharing"
+          target="_blank"
+          >https://docs.google.com/spreadsheets/d/1R7UHpZyOUIk14qhUq1tbjfIwzTzs1vysWkB-P2METzM/edit?usp=sharing</a
+        >
+      </p>
+      <pre id="questions"></pre>
+    </div>
+
+    <script src="./js/evaluation.js"></script>
+    <script src="./js/questions.js"></script>
+    <script>
+      // Create array of Question objects from input (= questions.js)
+      const questions = [];
+      input.forEach((q) => {
+        questions.push(
+          new Question(q.criterionType, q.criterionSubtype, q.questionType, q.options, q.question, q.score)
+        );
+      });
+      // Ouput questions with meta data
+      document.getElementById("questions").innerHTML = JSON.stringify(questions, null, 4);
+
+      function showResults() {
+        // Create evaluation object from questions
+        const eval = new Evaluation(questions);
+
+        // Set weights from user input
+        eval.setWeight(CriterionType.FUNCTIONALITY, document.getElementById("funcWeight").value);
+        eval.setWeight(CriterionType.FLEXIBILITY, document.getElementById("flexWeight").value);
+        eval.setWeight(CriterionType.OPERABILITY, document.getElementById("operaWeight").value);
+        eval.setWeight(CriterionType.DEPENDENCY, document.getElementById("depenWeight").value);
+        eval.setWeight(CriterionType.INVOLVEMENT, document.getElementById("involvWeight").value);
+
+        // Output to <pre>
+        const node = document.getElementById("results");
+        node.innerHTML = JSON.stringify(eval.getScores(), null, 4);
+      }
+    </script>
+  </body>
+</html>
